@@ -26,4 +26,5 @@ func RegisterRoutes(api fiber.Router, db *gorm.DB, jwtKey string) {
 	// Private routes
 	private := api.Group("/private/api/v1", middleware.InternalApiKeyAuth())
 	private.Get("/healthcheck", healthHandler.HealthCheck)
+	private.Get("/healtchecker", healthHandler.HealthCheck)
 }
