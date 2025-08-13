@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"svc-itasset-golang/internal/domain"
+	"svc-llt-golang/internal/domain"
 
 	"gorm.io/gorm"
 )

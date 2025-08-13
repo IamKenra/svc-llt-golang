@@ -1,10 +1,10 @@
 package v1
 
 import (
-	"svc-itasset-golang/internal/handler"
-	"svc-itasset-golang/internal/middleware"
-	"svc-itasset-golang/internal/repository"
-	"svc-itasset-golang/internal/usecase"
+	"svc-llt-golang/internal/middleware"
+	userHttp "svc-llt-golang/internal/users/delivery/http"
+	"svc-llt-golang/internal/users/repository"
+	"svc-llt-golang/internal/users/usecase"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -13,8 +13,8 @@ import (
 func RegisterRoutes(api fiber.Router, db *gorm.DB, jwtKey string) {
 	userRepo := repository.NewUserRepository(db)
 	userUC := usecase.NewUserUsecase(userRepo, jwtKey)
-	userHandler := handler.NewUserHandler(userUC)
-	healthHandler := handler.NewHealthHandler(db)
+	userHandler := userHttp.NewUserHandler(userUC)
+	healthHandler := userHttp.NewHealthHandler(db)
 
 	// Authentication routes
 	auth := api.Group("/auth")

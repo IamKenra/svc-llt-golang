@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"svc-itasset-golang/internal/repository"
-	"svc-itasset-golang/pkg/utils"
+	"svc-llt-golang/internal/repository"
+	"svc-llt-golang/pkg/utils"
 
 	"github.com/golang-jwt/jwt/v5"
 )

@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 
-	"svc-itasset-golang/internal/domain"
+	"svc-llt-golang/internal/domain"
 )
 
 func main() {

@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"svc-itasset-golang/pkg/logger"
-	"svc-itasset-golang/pkg/response"
+	"svc-llt-golang/pkg/logger"
+	"svc-llt-golang/pkg/response"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"

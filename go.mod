@@ -1,4 +1,4 @@
-module svc-itasset-golang
+module svc-llt-golang
 
 go 1.21.0
 

@@ -3,15 +3,15 @@ package main
 import (
 	"log"
 	"os"
-	v1 "svc-itasset-golang/api/v1"
+	v1 "svc-llt-golang/api/v1"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"svc-itasset-golang/config"
-	"svc-itasset-golang/internal/middleware"
+	"svc-llt-golang/config"
+	"svc-llt-golang/internal/middleware"
 )
 
 func main() {

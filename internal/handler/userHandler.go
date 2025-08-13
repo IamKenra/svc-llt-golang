@@ -2,9 +2,9 @@ package handler
 
 import (
 	"log"
-	"svc-itasset-golang/internal/usecase"
-	"svc-itasset-golang/pkg/logger"
-	"svc-itasset-golang/pkg/response"
+	"svc-llt-golang/internal/usecase"
+	"svc-llt-golang/pkg/logger"
+	"svc-llt-golang/pkg/response"
 
 	"github.com/gofiber/fiber/v2"
 )
