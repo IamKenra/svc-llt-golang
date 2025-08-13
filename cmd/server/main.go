@@ -3,22 +3,22 @@ package main
 import (
 	"log"
 	"os"
-	v1 "svc-llt-golang/api/v1"
+	"svc-llt-golang/domain/masterdata/delivery/http"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
 	"svc-llt-golang/config"
-	"svc-llt-golang/internal/middleware"
+	"svc-llt-golang/utils/middleware"
 )
 
 func main() {
 	_ = godotenv.Load()
 
 	dsn := config.GetDatabaseDSN()
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Database connection failed:", err)
 	}
@@ -28,7 +28,7 @@ func main() {
 	app.Use(middleware.CORSConfig())
 
 	apiGroup := app.Group("/itasset")
-	v1.RegisterRoutes(apiGroup, db, os.Getenv("JWT_SECRET"))
+	http.RegisterRoutes(apiGroup, db, os.Getenv("JWT_SECRET"))
 
 	log.Fatal(app.Listen(":3000"))
 }
