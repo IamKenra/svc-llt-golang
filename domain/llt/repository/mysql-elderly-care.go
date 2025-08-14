@@ -16,9 +16,9 @@ func NewMysqlLltRepository(db *gorm.DB) llt.Repository {
 	return &mysqlLltRepository{db}
 }
 
-func (r *mysqlLltRepository) GetAllElderlyCare(param map[string]interface{}) ([]valueobject.ElderlyCare, error) {
+func (db *mysqlLltRepository) GetAllElderlyCare(param map[string]interface{}) ([]valueobject.ElderlyCare, error) {
 	var elderlyCareList []entity.ElderlyCare
-	query := r.db
+	query := db.db
 	
 	if err := query.Find(&elderlyCareList).Error; err != nil {
 		return nil, err
@@ -32,9 +32,9 @@ func (r *mysqlLltRepository) GetAllElderlyCare(param map[string]interface{}) ([]
 	return result, nil
 }
 
-func (r *mysqlLltRepository) GetOneElderlyCare(param map[string]interface{}) (valueobject.ElderlyCare, error) {
+func (db *mysqlLltRepository) GetOneElderlyCare(param map[string]interface{}) (valueobject.ElderlyCare, error) {
 	var elderlyCare entity.ElderlyCare
-	query := r.db
+	query := db.db
 	
 	if uuid, ok := param["uuid"].(string); ok {
 		query = query.Where("uuid = ?", uuid)
@@ -47,12 +47,12 @@ func (r *mysqlLltRepository) GetOneElderlyCare(param map[string]interface{}) (va
 	return valueobject.ElderlyCare{ElderlyCare: elderlyCare}, nil
 }
 
-func (r *mysqlLltRepository) CreateElderlyCare(elderlyCare valueobject.ElderlyCare) error {
-	return r.db.Create(&elderlyCare.ElderlyCare).Error
+func (db *mysqlLltRepository) CreateElderlyCare(elderlyCare valueobject.ElderlyCare) error {
+	return db.db.Create(&elderlyCare.ElderlyCare).Error
 }
 
-func (r *mysqlLltRepository) UpdateElderlyCare(param map[string]interface{}, data map[string]interface{}) error {
-	query := r.db.Model(&entity.ElderlyCare{})
+func (db *mysqlLltRepository) UpdateElderlyCare(param map[string]interface{}, data map[string]interface{}) error {
+	query := db.db.Model(&entity.ElderlyCare{})
 	
 	for key, value := range param {
 		query = query.Where(key+" = ?", value)
@@ -61,8 +61,8 @@ func (r *mysqlLltRepository) UpdateElderlyCare(param map[string]interface{}, dat
 	return query.Updates(data).Error
 }
 
-func (r *mysqlLltRepository) DeleteElderlyCare(param map[string]interface{}) error {
-	query := r.db.Model(&entity.ElderlyCare{})
+func (db *mysqlLltRepository) DeleteElderlyCare(param map[string]interface{}) error {
+	query := db.db.Model(&entity.ElderlyCare{})
 	
 	for key, value := range param {
 		query = query.Where(key+" = ?", value)

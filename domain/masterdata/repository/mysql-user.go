@@ -16,9 +16,17 @@ func NewMysqlMasterdataRepository(db *gorm.DB) masterdata.Repository {
 	return &mysqlMasterdataRepository{db}
 }
 
-func (r *mysqlMasterdataRepository) GetAllUser(param map[string]interface{}) ([]valueobject.User, error) {
+func (db *mysqlMasterdataRepository) HealthCheck() error {
+	sql, err := db.db.DB()
+	if err != nil {
+		return err
+	}
+	return sql.Ping()
+}
+
+func (db *mysqlMasterdataRepository) GetAllUser(param map[string]interface{}) ([]valueobject.User, error) {
 	var users []entity.User
-	query := r.db
+	query := db.db
 	
 	if err := query.Find(&users).Error; err != nil {
 		return nil, err
@@ -32,9 +40,9 @@ func (r *mysqlMasterdataRepository) GetAllUser(param map[string]interface{}) ([]
 	return result, nil
 }
 
-func (r *mysqlMasterdataRepository) GetOneUser(param map[string]interface{}) (valueobject.User, error) {
+func (db *mysqlMasterdataRepository) GetOneUser(param map[string]interface{}) (valueobject.User, error) {
 	var user entity.User
-	query := r.db
+	query := db.db
 	
 	if uuid, ok := param["uuid"].(string); ok {
 		query = query.Where("uuid = ?", uuid)
@@ -47,28 +55,28 @@ func (r *mysqlMasterdataRepository) GetOneUser(param map[string]interface{}) (va
 	return valueobject.User{User: user}, nil
 }
 
-func (r *mysqlMasterdataRepository) FindByUsername(username string) (valueobject.User, error) {
+func (db *mysqlMasterdataRepository) FindByUsername(username string) (valueobject.User, error) {
 	var user entity.User
-	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
+	if err := db.db.Where("username = ?", username).First(&user).Error; err != nil {
 		return valueobject.User{}, err
 	}
 	return valueobject.User{User: user}, nil
 }
 
-func (r *mysqlMasterdataRepository) FindByUUID(uuid string) (valueobject.User, error) {
+func (db *mysqlMasterdataRepository) FindByUUID(uuid string) (valueobject.User, error) {
 	var user entity.User
-	if err := r.db.Where("uuid = ?", uuid).First(&user).Error; err != nil {
+	if err := db.db.Where("uuid = ?", uuid).First(&user).Error; err != nil {
 		return valueobject.User{}, err
 	}
 	return valueobject.User{User: user}, nil
 }
 
-func (r *mysqlMasterdataRepository) CreateUser(user valueobject.User) error {
-	return r.db.Create(&user.User).Error
+func (db *mysqlMasterdataRepository) CreateUser(user valueobject.User) error {
+	return db.db.Create(&user.User).Error
 }
 
-func (r *mysqlMasterdataRepository) UpdateUser(param map[string]interface{}, data map[string]interface{}) error {
-	query := r.db.Model(&entity.User{})
+func (db *mysqlMasterdataRepository) UpdateUser(param map[string]interface{}, data map[string]interface{}) error {
+	query := db.db.Model(&entity.User{})
 	
 	for key, value := range param {
 		query = query.Where(key+" = ?", value)
@@ -77,8 +85,8 @@ func (r *mysqlMasterdataRepository) UpdateUser(param map[string]interface{}, dat
 	return query.Updates(data).Error
 }
 
-func (r *mysqlMasterdataRepository) DeleteUser(param map[string]interface{}) error {
-	query := r.db.Model(&entity.User{})
+func (db *mysqlMasterdataRepository) DeleteUser(param map[string]interface{}) error {
+	query := db.db.Model(&entity.User{})
 	
 	for key, value := range param {
 		query = query.Where(key+" = ?", value)
