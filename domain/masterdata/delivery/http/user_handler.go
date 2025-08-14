@@ -11,30 +11,30 @@ import (
 )
 
 type UserHandler struct {
-	userUsecase masterdata.Usecase
+	masterdataUsecase masterdata.Usecase
 }
 
-func NewUserHandler(userUC masterdata.Usecase) *UserHandler {
-	return &UserHandler{userUsecase: userUC}
+func NewUserHandler(masterdataUC masterdata.Usecase) *UserHandler {
+	return &UserHandler{masterdataUsecase: masterdataUC}
 }
 
-func (h *UserHandler) Login(c *fiber.Ctx) error {
+func (handler *UserHandler) Login(ctx *fiber.Ctx) error {
 	log.Println("Login request received")
 	var req valueobject.UserLoginRequest
 
-	if err := c.BodyParser(&req); err != nil {
+	if err := ctx.BodyParser(&req); err != nil {
 		logger.Error("Failed to parse request body: " + err.Error())
-		return response.BadRequest(c, "Invalid request payload")
+		return response.BadRequest(ctx, "Invalid request payload")
 	}
 
-	token, err := h.userUsecase.Login(req.Username, req.Password)
+	token, err := handler.masterdataUsecase.Login(req.Username, req.Password)
 	if err != nil {
 		logger.Error("Invalid credentials for user: " + req.Username + " Wrong password atau username")
-		return response.Error(c, "Invalid credentials Wrong password atau username")
+		return response.Error(ctx, "Invalid credentials Wrong password atau username")
 	}
 
 	logger.Info("User logged in successfully: " + req.Username)
-	return response.Success(c, valueobject.UserLoginResponse{
+	return response.Success(ctx, valueobject.UserLoginResponse{
 		Message: "Login successful",
 		Token:   token,
 	})
