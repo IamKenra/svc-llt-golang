@@ -13,7 +13,7 @@ func RegisterRoutes(api fiber.Router, db *gorm.DB, jwtKey string) {
 	masterdataRepo := repository.NewMysqlMasterdataRepository(db)
 	masterdataUC := usecase.NewMasterdataUsecase(masterdataRepo, jwtKey)
 	userHandler := NewUserHandler(masterdataUC)
-	healthHandler := NewHealthHandler(db)
+	healthHandler := NewHealthHandler(masterdataUC)
 
 	// Authentication routes
 	auth := api.Group("/auth")

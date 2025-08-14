@@ -5,6 +5,9 @@ import (
 )
 
 type Repository interface {
+	// Health check repositories
+	HealthCheck() error
+
 	// User repositories
 	GetAllUser(param map[string]interface{}) ([]valueobject.User, error)
 	GetOneUser(param map[string]interface{}) (valueobject.User, error)
