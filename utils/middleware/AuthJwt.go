@@ -3,8 +3,8 @@ package middleware
 import (
 	"os"
 	"strings"
-	"svc-itasset-golang/pkg/logger"
-	"svc-itasset-golang/pkg/response"
+	"svc-llt-golang/utils/logger"
+	"svc-llt-golang/utils/response"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"

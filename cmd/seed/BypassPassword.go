@@ -5,20 +5,19 @@ import (
 
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 
-	"svc-itasset-golang/internal/domain"
+	"svc-llt-golang/entity"
 )
 
 func main() {
 	_ = godotenv.Load()
 
-	dsn := "host=localhost user=admin password=bismillah@1 dbname=it_asset port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	dsn := "admin:bismillah@1@tcp(localhost:3306)/it_asset?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "auth.", // untuk schema auth
 			SingularTable: false,
 		},
 	})
@@ -31,7 +30,7 @@ func main() {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 
 	// Update password
-	if err := db.Model(&domain.Users{}).Where("username = ?", username).
+	if err := db.Model(&entity.User{}).Where("username = ?", username).
 		Update("password", string(hashedPassword)).Error; err != nil {
 		log.Fatal("Failed to update password:", err)
 	}

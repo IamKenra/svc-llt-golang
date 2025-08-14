@@ -1,0 +1,24 @@
+package masterdata
+
+import (
+	"svc-llt-golang/valueobject"
+)
+
+/*
+*
+why there's only one usecase interface while there can more than one repository interface?...
+... because, at DDD (Domain Design Driven), there's only one set of usecase and...
+... the function name inside the usecase should be unique and represent the business process...
+... tl;dr: function name is telling what exactly are they doing.
+*/
+type Usecase interface {
+	// Authentication usecases
+	Login(username, password string) (string, error)
+
+	// User usecases
+	GetAllUser(param map[string]interface{}) ([]valueobject.User, error)
+	GetOneUser(param map[string]interface{}) (valueobject.User, error)
+	StoreUser(payload valueobject.UserPayloadInsert) (valueobject.UserPayloadInsert, error)
+	UpdateUser(payload valueobject.UserPayloadUpdate) error
+	DeleteUser(payload valueobject.UserPayloadDelete) error
+}

@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"os"
-	"svc-itasset-golang/pkg/response"
+	"svc-llt-golang/utils/response"
 
 	"github.com/gofiber/fiber/v2"
 )

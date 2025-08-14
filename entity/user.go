@@ -1,10 +1,10 @@
-package domain
+package entity
 
 import (
 	"time"
 )
 
-type Users struct {
+type User struct {
 	ID        uint   `gorm:"primaryKey"`
 	Username  string `gorm:"uniqueIndex;not null"`
 	Password  string `gorm:"not null"`
@@ -13,6 +13,6 @@ type Users struct {
 	UpdatedAt time.Time
 }
 
-func (Users) TableName() string {
-	return "auth.users"
+func (User) TableName() string {
+	return "users"
 }
