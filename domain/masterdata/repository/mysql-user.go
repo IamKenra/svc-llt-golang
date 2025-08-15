@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"time"
 	"svc-llt-golang/domain/masterdata"
 	"svc-llt-golang/entity"
 	"svc-llt-golang/valueobject"
@@ -14,14 +15,6 @@ type mysqlMasterdataRepository struct {
 
 func NewMysqlMasterdataRepository(db *gorm.DB) masterdata.Repository {
 	return &mysqlMasterdataRepository{db}
-}
-
-func (db *mysqlMasterdataRepository) HealthCheck() error {
-	sql, err := db.db.DB()
-	if err != nil {
-		return err
-	}
-	return sql.Ping()
 }
 
 func (db *mysqlMasterdataRepository) GetAllUser(param map[string]interface{}) ([]valueobject.User, error) {
@@ -56,11 +49,18 @@ func (db *mysqlMasterdataRepository) GetOneUser(param map[string]interface{}) (v
 }
 
 func (db *mysqlMasterdataRepository) FindByUsername(username string) (valueobject.User, error) {
-	var user entity.User
-	if err := db.db.Where("username = ?", username).First(&user).Error; err != nil {
+	var auth entity.Auth
+	if err := db.db.Where("username = ?", username).First(&auth).Error; err != nil {
 		return valueobject.User{}, err
 	}
-	return valueobject.User{User: user}, nil
+	// For login, we need to return auth data in User format for compatibility
+	user := valueobject.User{
+		User: entity.User{
+			UUID: auth.Username, // temporary for login compatibility
+		},
+		Password: auth.Password, // Add password field for verification
+	}
+	return user, nil
 }
 
 func (db *mysqlMasterdataRepository) FindByUUID(uuid string) (valueobject.User, error) {
@@ -71,8 +71,27 @@ func (db *mysqlMasterdataRepository) FindByUUID(uuid string) (valueobject.User, 
 	return valueobject.User{User: user}, nil
 }
 
-func (db *mysqlMasterdataRepository) CreateUser(user valueobject.User) error {
-	return db.db.Create(&user.User).Error
+func (db *mysqlMasterdataRepository) CreateAuth(username, password string) error {
+	auth := entity.Auth{
+		Username:  username,
+		Password:  password,
+		TglInput:  time.Now(),
+		TglUpdate: time.Now(),
+		UserInput: "system",
+	}
+	return db.db.Create(&auth).Error
+}
+
+func (db *mysqlMasterdataRepository) CreateUser(uuid, nama, email string) error {
+	user := entity.User{
+		UUID:      uuid,
+		Nama:      nama,
+		Email:     email,
+		TglInput:  time.Now(),
+		TglUpdate: time.Now(),
+		UserInput: "system",
+	}
+	return db.db.Create(&user).Error
 }
 
 func (db *mysqlMasterdataRepository) UpdateUser(param map[string]interface{}, data map[string]interface{}) error {

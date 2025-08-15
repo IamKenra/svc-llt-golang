@@ -12,11 +12,9 @@ why there's only one usecase interface while there can more than one repository 
 ... tl;dr: function name is telling what exactly are they doing.
 */
 type Usecase interface {
-	// Health check usecases
-	HealthCheck() error
-
 	// Authentication usecases
 	Login(username, password string) (string, error)
+	Register(payload valueobject.UserRegisterRequest) (valueobject.UserRegisterResponse, error)
 
 	// User usecases
 	GetAllUser(param map[string]interface{}) ([]valueobject.User, error)

@@ -8,6 +8,7 @@ import (
 	"svc-llt-golang/valueobject"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 func (masterdata masterdataUsecase) Login(username, password string) (string, error) {
@@ -33,6 +34,29 @@ func (masterdata masterdataUsecase) Login(username, password string) (string, er
 	return tokenString, nil
 }
 
+func (masterdata masterdataUsecase) Register(payload valueobject.UserRegisterRequest) (valueobject.UserRegisterResponse, error) {
+	hashedPassword, err := utils.HashPassword(payload.Password)
+	if err != nil {
+		return valueobject.UserRegisterResponse{}, errors.New("failed to hash password")
+	}
+
+	err = masterdata.repository.CreateAuth(payload.Username, hashedPassword)
+	if err != nil {
+		return valueobject.UserRegisterResponse{}, errors.New("username already exists")
+	}
+
+	userUUID := uuid.New().String()
+	err = masterdata.repository.CreateUser(userUUID, payload.Nama, payload.Email)
+	if err != nil {
+		return valueobject.UserRegisterResponse{}, errors.New("email already exists")
+	}
+
+	return valueobject.UserRegisterResponse{
+		Message: "User registered successfully",
+		UUID:    userUUID,
+	}, nil
+}
+
 func (masterdata masterdataUsecase) GetAllUser(param map[string]interface{}) ([]valueobject.User, error) {
 	return masterdata.repository.GetAllUser(param)
 }
@@ -42,7 +66,8 @@ func (masterdata masterdataUsecase) GetOneUser(param map[string]interface{}) (va
 }
 
 func (masterdata masterdataUsecase) StoreUser(payload valueobject.UserPayloadInsert) (valueobject.UserPayloadInsert, error) {
-	err := masterdata.repository.CreateUser(payload.Data[0])
+	userUUID := uuid.New().String()
+	err := masterdata.repository.CreateUser(userUUID, payload.Data[0].Nama, payload.Data[0].Email)
 	return payload, err
 }
 
@@ -51,8 +76,8 @@ func (masterdata masterdataUsecase) UpdateUser(payload valueobject.UserPayloadUp
 		"uuid": payload.Data.Param.UUID,
 	}
 	data := map[string]interface{}{
-		"username": payload.Data.Body.Username,
-		"password": payload.Data.Body.Password,
+		"nama":  payload.Data.Body.Nama,
+		"email": payload.Data.Body.Email,
 	}
 	return masterdata.repository.UpdateUser(param, data)
 }

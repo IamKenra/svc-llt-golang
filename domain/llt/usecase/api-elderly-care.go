@@ -13,8 +13,6 @@ func (llt lltUsecase) GetOneElderlyCare(param map[string]interface{}) (valueobje
 }
 
 func (llt lltUsecase) StoreElderlyCare(payload valueobject.ElderlyCarePayloadInsert) (valueobject.ElderlyCarePayloadInsert, error) {
-	// TODO: Generate UUID and other business logic before storing
-	
 	err := llt.repository.CreateElderlyCare(payload.Data[0])
 	return payload, err
 }
