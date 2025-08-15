@@ -40,8 +40,15 @@ func main() {
 
 	app.Use(middleware.CORSConfig())
 
+	// Register routes with /llt-svc prefix
 	apiGroup := app.Group("/llt-svc")
 	http.RegisterRoutes(apiGroup, db, os.Getenv("JWT_SECRET"))
 
+	// Add a test route to verify routing works
+	apiGroup.Get("/test", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"message": "test endpoint working"})
+	})
+
+	log.Println("Routes registered. Starting server...")
 	log.Fatal(app.Listen(":3000"))
 }
