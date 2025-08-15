@@ -3,9 +3,9 @@ package entity
 import "time"
 
 type Identity struct {
-	ID        uint      `gorm:"primaryKey"`
+	ID        int64     `gorm:"primaryKey;autoIncrement:false"`
 	UUID      string    `gorm:"uniqueIndex;not null"`
-	UserID    uint      `gorm:"not null"`
+	UserID    int64     `gorm:"not null"`
 	Type      string    `gorm:"not null"` // email, phone, etc.
 	Value     string    `gorm:"not null"`
 	Verified  bool      `gorm:"default:false"`

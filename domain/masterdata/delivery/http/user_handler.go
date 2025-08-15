@@ -49,12 +49,15 @@ func (handler *UserHandler) Register(ctx *fiber.Ctx) error {
 		return response.BadRequest(ctx, "Invalid request payload")
 	}
 
-	result, err := handler.masterdataUsecase.Register(req)
+	userUUID, err := handler.masterdataUsecase.Register(req)
 	if err != nil {
 		logger.Error("Registration failed: " + err.Error())
 		return response.Error(ctx, err.Error())
 	}
 
 	logger.Info("User registered successfully: " + req.Username)
-	return response.Success(ctx, result)
+	return response.Success(ctx, valueobject.UserRegisterResponse{
+		Message: "User registered successfully",
+		UUID:    userUUID,
+	})
 }

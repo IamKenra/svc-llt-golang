@@ -61,6 +61,16 @@ Service untuk Layanan Lansia Terpadu (LLT) menggunakan Go dengan clean architect
   - Removed direct database dependency from handler
   - Added health check to usecase and repository layers
   - Handler now uses usecase interface instead of direct GORM access
+- [x] **Business Logic & Processor Separation** ⭐
+  - **API Layer** (`api-*.go`): Contains business logic, validation, orchestration
+  - **Processor Layer** (`processor-*.go`): Database operations preparation for ORM
+  - **Handler Layer**: HTTP request/response handling and response formatting
+  - Clear separation following svc-partnership-go pattern with ORM adaptations
+- [x] **Random Bigint ID Implementation** 🔒
+  - Changed all entity IDs from `uint` to `int64` with `autoIncrement:false`
+  - Cryptographically secure random ID generation (19-digit minimum)
+  - Repository layer generates IDs on create operations
+  - Prevents enumeration attacks and distributed system ID conflicts
 
 ### 6. Project Maintenance
 - [x] Created comprehensive `.gitignore` file
@@ -100,6 +110,7 @@ Service untuk Layanan Lansia Terpadu (LLT) menggunakan Go dengan clean architect
 ├── .env.example          ← Environment template
 └── _document/            ← Project documentation (preserved)
 ```
+
 
 ## 🔧 Technical Configuration
 
@@ -202,13 +213,14 @@ PORT=3000
 ## 📝 Notes
 
 - Project follows `svc-partnership-go` architecture standards with 100% compliance
-- All struct entities centralized in `/entity/`
+- All struct entities centralized in `/entity/` with random bigint IDs
 - All DTOs/payloads centralized in `/valueobject/`
 - Clean separation between domain layers with proper dependency inversion
 - Ready for horizontal scaling with multiple domains
-- All code standards and naming conventions match svc-partnership-go regulation
-- Health check properly implemented across all layers (handler → usecase → repository)
+- **Security-first approach**: Random IDs prevent enumeration attacks
 - Build successful with no compilation errors
+
+> **📋 For detailed implementation guidelines, see [notes.md](./notes.md)**
 
 ## 🔗 References
 

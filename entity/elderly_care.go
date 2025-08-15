@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type ElderlyCare struct {
-	ID        uint      `gorm:"primaryKey"`
+	ID        int64     `gorm:"primaryKey;autoIncrement:false"`
 	UUID      string    `gorm:"uniqueIndex;not null"`
 	Name      string    `gorm:"not null"`
 	Age       int       `gorm:"not null"`

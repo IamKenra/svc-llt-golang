@@ -34,27 +34,24 @@ func (masterdata masterdataUsecase) Login(username, password string) (string, er
 	return tokenString, nil
 }
 
-func (masterdata masterdataUsecase) Register(payload valueobject.UserRegisterRequest) (valueobject.UserRegisterResponse, error) {
+func (masterdata masterdataUsecase) Register(payload valueobject.UserRegisterRequest) (string, error) {
 	hashedPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
-		return valueobject.UserRegisterResponse{}, errors.New("failed to hash password")
+		return "", errors.New("failed to hash password")
 	}
 
 	err = masterdata.repository.CreateAuth(payload.Username, hashedPassword)
 	if err != nil {
-		return valueobject.UserRegisterResponse{}, errors.New("username already exists")
+		return "", errors.New("username already exists")
 	}
 
 	userUUID := uuid.New().String()
 	err = masterdata.repository.CreateUser(userUUID, payload.Nama, payload.Email)
 	if err != nil {
-		return valueobject.UserRegisterResponse{}, errors.New("email already exists")
+		return "", errors.New("email already exists")
 	}
 
-	return valueobject.UserRegisterResponse{
-		Message: "User registered successfully",
-		UUID:    userUUID,
-	}, nil
+	return userUUID, nil
 }
 
 func (masterdata masterdataUsecase) GetAllUser(param map[string]interface{}) ([]valueobject.User, error) {
@@ -66,31 +63,18 @@ func (masterdata masterdataUsecase) GetOneUser(param map[string]interface{}) (va
 }
 
 func (masterdata masterdataUsecase) StoreUser(payload valueobject.UserPayloadInsert) (valueobject.UserPayloadInsert, error) {
-	userUUID := uuid.New().String()
-	err := masterdata.repository.CreateUser(userUUID, payload.Data[0].Nama, payload.Data[0].Email)
+	for i := range payload.Data {
+		payload.Data[i].UUID = uuid.New().String()
+	}
+
+	err := masterdata.ProcessStoreUser(payload)
 	return payload, err
 }
 
 func (masterdata masterdataUsecase) UpdateUser(payload valueobject.UserPayloadUpdate) error {
-	param := map[string]interface{}{
-		"uuid": payload.Data.Param.UUID,
-	}
-	data := map[string]interface{}{
-		"nama":  payload.Data.Body.Nama,
-		"email": payload.Data.Body.Email,
-	}
-	return masterdata.repository.UpdateUser(param, data)
+	return masterdata.ProcessUpdateUser(payload)
 }
 
 func (masterdata masterdataUsecase) DeleteUser(payload valueobject.UserPayloadDelete) error {
-	for _, user := range payload.Param {
-		param := map[string]interface{}{
-			"uuid": user.UUID,
-		}
-		err := masterdata.repository.DeleteUser(param)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return masterdata.ProcessDeleteUser(payload)
 }

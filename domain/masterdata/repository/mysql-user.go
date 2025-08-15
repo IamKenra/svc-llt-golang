@@ -5,6 +5,7 @@ import (
 	"svc-llt-golang/domain/masterdata"
 	"svc-llt-golang/entity"
 	"svc-llt-golang/valueobject"
+	"svc-llt-golang/utils/utils"
 
 	"gorm.io/gorm"
 )
@@ -72,7 +73,13 @@ func (db *mysqlMasterdataRepository) FindByUUID(uuid string) (valueobject.User, 
 }
 
 func (db *mysqlMasterdataRepository) CreateAuth(username, password string) error {
+	randomID, err := utils.GenerateRandomID()
+	if err != nil {
+		return err
+	}
+
 	auth := entity.Auth{
+		ID:        randomID,
 		Username:  username,
 		Password:  password,
 		TglInput:  time.Now(),
@@ -83,7 +90,13 @@ func (db *mysqlMasterdataRepository) CreateAuth(username, password string) error
 }
 
 func (db *mysqlMasterdataRepository) CreateUser(uuid, nama, email string) error {
+	randomID, err := utils.GenerateRandomID()
+	if err != nil {
+		return err
+	}
+
 	user := entity.User{
+		ID:        randomID,
 		UUID:      uuid,
 		Nama:      nama,
 		Email:     email,
