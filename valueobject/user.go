@@ -47,4 +47,5 @@ type UserDataUpdate struct {
 
 type UserPayloadDelete struct {
 	Param []User `json:"param" binding:"required"`
+	User  string
 }

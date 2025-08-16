@@ -7,7 +7,11 @@ import (
 
 func (llt lltUsecase) ProcessStoreLansia(payload valueobject.LansiaPayloadInsert) error {
 	for _, x := range payload.Data {
-		err := llt.repository.CreateLansia(x.UUID, x.Name, x.Age, x.Status)
+		var nama string
+		if x.Lansia.Nama != nil {
+			nama = *x.Lansia.Nama
+		}
+		err := llt.repository.CreateLansia(x.Lansia.UUID, nama, x.Lansia.IdIdentitas, x.Lansia.IdAlamat, payload.User)
 		if err != nil {
 			return err
 		}
@@ -20,10 +24,12 @@ func (llt lltUsecase) ProcessUpdateLansia(payload valueobject.LansiaPayloadUpdat
 		"uuid": payload.Data.Param.UUID,
 	}
 	data := map[string]interface{}{
-		"name":       payload.Data.Body.Name,
-		"age":        payload.Data.Body.Age,
-		"status":     payload.Data.Body.Status,
-		"updated_at": time.Now(),
+		"tgl_update": time.Now(),
+	}
+	
+	// Update user who modified
+	if payload.User != "" {
+		data["user_update"] = payload.User
 	}
 
 	return llt.repository.UpdateLansia(param, data)

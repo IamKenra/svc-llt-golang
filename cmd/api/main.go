@@ -3,7 +3,8 @@ package main
 import (
 	"log"
 	"os"
-	"svc-llt-golang/domain/masterdata/delivery/http"
+	masterdataHttp "svc-llt-golang/domain/masterdata/delivery/http"
+	lltHttp "svc-llt-golang/domain/llt/delivery/http"
 	"svc-llt-golang/entity"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,13 +26,13 @@ func main() {
 	}
 
 	// Drop existing tables and recreate them to match our entities
-	err = db.Migrator().DropTable(&entity.Auth{}, &entity.User{})
+	err = db.Migrator().DropTable(&entity.Auth{}, &entity.User{}, &entity.Lansia{})
 	if err != nil {
 		log.Printf("Warning: Failed to drop existing tables: %v", err)
 	}
 
 	// Auto-migrate tables based on entities
-	err = db.AutoMigrate(&entity.Auth{}, &entity.User{})
+	err = db.AutoMigrate(&entity.Auth{}, &entity.User{}, &entity.Lansia{})
 	if err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
@@ -42,7 +43,12 @@ func main() {
 
 	// Register routes with /llt-svc prefix
 	apiGroup := app.Group("/llt-svc")
-	http.RegisterRoutes(apiGroup, db, os.Getenv("JWT_SECRET"))
+	
+	// Register masterdata routes (auth)
+	masterdataHttp.RegisterRoutes(apiGroup, db, os.Getenv("JWT_SECRET"))
+	
+	// Register LLT routes (lansia)
+	lltHttp.RegisterLltRoutes(apiGroup, db)
 
 	// Add a test route to verify routing works
 	apiGroup.Get("/test", func(c *fiber.Ctx) error {

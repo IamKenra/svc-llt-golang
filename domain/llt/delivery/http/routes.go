@@ -1,18 +1,22 @@
 package http
 
 import (
-	"svc-llt-golang/domain/llt"
+	"log"
+	"svc-llt-golang/domain/llt/repository"
+	"svc-llt-golang/domain/llt/usecase"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
-func NewLltRoutes(app *fiber.App, lltUsecase llt.Usecase) {
-	// Initialize handlers
-	lansiaHandler := NewLansiaHandler(lltUsecase)
+func RegisterLltRoutes(api fiber.Router, db *gorm.DB) {
+	// Initialize repository and usecase
+	lltRepo := repository.NewMysqlLltRepository(db)
+	lltUC := usecase.NewLltUsecase(lltRepo)
+	lansiaHandler := NewLansiaHandler(lltUC)
 
-	api := app.Group("/api/v1")
+	// Lansia routes under /lansia
 	lansia := api.Group("/lansia")
-
 	{
 		lansia.Get("/", lansiaHandler.GetAllLansia)
 		lansia.Get("/detail", lansiaHandler.GetOneLansia)
@@ -20,4 +24,7 @@ func NewLltRoutes(app *fiber.App, lltUsecase llt.Usecase) {
 		lansia.Put("/", lansiaHandler.UpdateLansia)
 		lansia.Delete("/", lansiaHandler.DeleteLansia)
 	}
+	
+	// Debug: Log that routes are registered
+	log.Println("LLT routes registered successfully")
 }
