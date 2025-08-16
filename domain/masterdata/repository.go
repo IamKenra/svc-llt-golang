@@ -16,4 +16,5 @@ type Repository interface {
 	CreateUser(uuid, nama, email string) error
 	UpdateUser(param map[string]interface{}, data map[string]interface{}) error
 	DeleteUser(param map[string]interface{}) error
+
 }

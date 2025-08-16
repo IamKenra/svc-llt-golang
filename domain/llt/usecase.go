@@ -12,10 +12,10 @@ why there's only one usecase interface while there can more than one repository 
 ... tl;dr: function name is telling what exactly are they doing.
 */
 type Usecase interface {
-	// ElderlyCare usecases
-	GetAllElderlyCare(param map[string]interface{}) ([]valueobject.ElderlyCare, error)
-	GetOneElderlyCare(param map[string]interface{}) (valueobject.ElderlyCare, error)
-	StoreElderlyCare(payload valueobject.ElderlyCarePayloadInsert) (valueobject.ElderlyCarePayloadInsert, error)
-	UpdateElderlyCare(payload valueobject.ElderlyCarePayloadUpdate) error
-	DeleteElderlyCare(payload valueobject.ElderlyCarePayloadDelete) error
+	// Lansia usecases
+	GetAllLansia(param map[string]interface{}) ([]valueobject.Lansia, error)
+	GetOneLansia(param map[string]interface{}) (valueobject.Lansia, error)
+	StoreLansia(payload valueobject.LansiaPayloadInsert) (valueobject.LansiaPayloadInsert, error)
+	UpdateLansia(payload valueobject.LansiaPayloadUpdate) error
+	DeleteLansia(payload valueobject.LansiaPayloadDelete) error
 }

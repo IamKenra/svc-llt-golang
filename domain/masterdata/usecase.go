@@ -15,4 +15,5 @@ type Usecase interface {
 	StoreUser(payload valueobject.UserPayloadInsert) (valueobject.UserPayloadInsert, error)
 	UpdateUser(payload valueobject.UserPayloadUpdate) error
 	DeleteUser(payload valueobject.UserPayloadDelete) error
+
 }

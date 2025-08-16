@@ -2,7 +2,7 @@ package entity
 
 import "time"
 
-type ElderlyCare struct {
+type Lansia struct {
 	ID        int64     `gorm:"primaryKey;autoIncrement:false"`
 	UUID      string    `gorm:"uniqueIndex;not null"`
 	Name      string    `gorm:"not null"`
@@ -12,6 +12,6 @@ type ElderlyCare struct {
 	UpdatedAt time.Time
 }
 
-func (ElderlyCare) TableName() string {
-	return "elderly_care"
+func (Lansia) TableName() string {
+	return "lansia"
 }

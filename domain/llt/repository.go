@@ -5,10 +5,10 @@ import (
 )
 
 type Repository interface {
-	// ElderlyCare repositories
-	GetAllElderlyCare(param map[string]interface{}) ([]valueobject.ElderlyCare, error)
-	GetOneElderlyCare(param map[string]interface{}) (valueobject.ElderlyCare, error)
-	CreateElderlyCare(elderlyCare valueobject.ElderlyCare) error
-	UpdateElderlyCare(param map[string]interface{}, data map[string]interface{}) error
-	DeleteElderlyCare(param map[string]interface{}) error
+	// Lansia repositories
+	GetAllLansia(param map[string]interface{}) ([]valueobject.Lansia, error)
+	GetOneLansia(param map[string]interface{}) (valueobject.Lansia, error)
+	CreateLansia(uuid, name string, age int, status string) error
+	UpdateLansia(param map[string]interface{}, data map[string]interface{}) error
+	DeleteLansia(param map[string]interface{}) error
 }

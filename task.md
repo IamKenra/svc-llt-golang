@@ -77,6 +77,21 @@ Service untuk Layanan Lansia Terpadu (LLT) menggunakan Go dengan clean architect
 - [x] Removed `/bin` directory (40MB of build artifacts)
 - [x] Added `/bin/` to `.gitignore` to prevent future binary commits
 
+### 7. User Tracking & Security Implementation ⭐
+- [x] **X-Member Header Implementation**
+  - Created reusable utility package `utils/header/header.go`
+  - Functions: `ExtractXMember()`, `ValidateAndExtractXMember()`
+  - Constants for header name and error messages
+  - Integrated in all lansia CRUD operations (Store, Update, Delete)
+- [x] **Endpoint Security Enhancement**
+  - Changed `/lansia:uuid` to `/lansia/detail?uuid=` (query parameter)
+  - Prevents UUID exposure in URL paths, logs, and browser history
+  - Improved security posture for sensitive identifier handling
+- [x] **Value Object Updates**
+  - Added `User` field to all payload structs for user tracking
+  - Support for both user input and user update operations
+  - Consistent user tracking across all lansia operations
+
 ## 📁 Final Project Structure
 
 ```
@@ -103,6 +118,7 @@ Service untuk Layanan Lansia Terpadu (LLT) menggunakan Go dengan clean architect
 ├── utils/                 ← Shared utilities
 │   ├── logger/
 │   ├── response/
+│   ├── header/            ← Header utilities (X-Member extraction)
 │   ├── middleware/        ← Auth, CORS, etc.
 │   └── utils/             ← Hash, etc.
 ├── config/                ← Configuration
@@ -142,11 +158,12 @@ PORT=3000
 ## 📋 Next Development Tasks (TODO)
 
 ### High Priority
-- [ ] Complete LLT domain implementation
+- [x] Complete LLT domain implementation
   - [x] Basic structure created (usecase, repository, entity)
-  - [ ] Implement elderly care CRUD handlers
-  - [ ] Create elderly care routes
-  - [ ] Add business logic validation
+  - [x] Implement lansia CRUD handlers with user tracking
+  - [x] Create lansia routes with security enhancements
+  - [x] Add X-Member header validation
+  - [ ] Add business logic validation for lansia data
 - [ ] Database migrations & seeding
   - [ ] Create migration files for all entities
   - [ ] Set up auto-migration on startup

@@ -126,3 +126,4 @@ func (db *mysqlMasterdataRepository) DeleteUser(param map[string]interface{}) er
 	
 	return query.Delete(&entity.User{}).Error
 }
+

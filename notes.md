@@ -84,3 +84,32 @@ type Entity struct {
 - Proper dependency inversion between layers
 - MySQL with random bigint IDs for security
 - Clean separation of concerns across all layers
+
+## User Tracking & Security Features
+
+### X-Member Header Implementation
+```go
+// Utility package for reusable header extraction
+utils/header/header.go:
+- ExtractXMember(ctx *fiber.Ctx) (string, error)
+- ValidateAndExtractXMember(ctx *fiber.Ctx) (string, error)
+- Constants: XMemberHeader, XMemberRequiredError
+```
+
+### Handler Integration
+```go
+// All CRUD operations extract X-Member for user tracking
+xMember, err := header.ValidateAndExtractXMember(ctx)
+if err != nil {
+    return err // Returns formatted error response
+}
+req.User = xMember
+```
+
+### Security Enhancements
+- **Endpoint Security**: Query parameters instead of path parameters
+  - Before: `/lansia:uuid` → After: `/lansia/detail?uuid=xxx`
+  - Prevents UUID exposure in logs, browser history, referrer headers
+- **User Tracking**: All payload structs include `User` field
+  - Tracks who performed create, update, delete operations
+  - Supports audit trail and accountability
