@@ -22,7 +22,6 @@ func (db *mysqlLltRepository) GetAllLansia(param map[string]interface{}) ([]valu
 	var lansiaList []entity.Lansia
 	query := db.db
 
-	// Apply filters if provided
 	for key, value := range param {
 		query = query.Where(key+" = ?", value)
 	}
@@ -55,26 +54,29 @@ func (db *mysqlLltRepository) GetOneLansia(param map[string]interface{}) (valueo
 }
 
 func (db *mysqlLltRepository) CreateLansia(uuid, nama string, idIdentitas, idAlamat int64, userInput string) error {
-	// Generate random ID following boilerplate pattern
 	randomID, err := utils.GenerateRandomID()
 	if err != nil {
 		return err
 	}
 
 	lansia := entity.Lansia{
-		ID:   randomID,
-		UUID: uuid,
+		ID:          randomID,
+		UUID:        uuid,
+		IdIdentitas: idIdentitas,
+		IdAlamat:    idAlamat,
+		FlagAktif:   true,
+		FlagDelete:  false,
+		TglInput:    time.Now(),
+		TglUpdate:   time.Now(),
 	}
-	
-	// Set fields that can be set
+
+	// Set optional fields
 	if nama != "" {
 		lansia.Nama = &nama
 	}
-	lansia.IdIdentitas = idIdentitas
-	lansia.IdAlamat = idAlamat
-	lansia.FlagAktif = true
-	lansia.FlagDelete = false
-	lansia.UserInput = userInput
+	if userInput != "" {
+		lansia.UserInput = &userInput
+	}
 	return db.db.Create(&lansia).Error
 }
 

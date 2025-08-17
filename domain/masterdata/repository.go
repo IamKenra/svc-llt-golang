@@ -7,7 +7,7 @@ import (
 type Repository interface {
 	// Auth repositories
 	CreateAuth(username, password string) error
-	FindByUsername(username string) (valueobject.User, error)
+	FindByUsername(username string) (valueobject.Auth, error)
 	
 	// User repositories
 	GetAllUser(param map[string]interface{}) ([]valueobject.User, error)

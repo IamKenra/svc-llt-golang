@@ -4,7 +4,16 @@ import "svc-llt-golang/entity"
 
 type Lansia struct {
 	entity.Lansia
-	// Add additional fields for API responses if needed
+	entity.StandardKey
+	entity.Pagination
+	entity.Time
+	Age int `json:"age,omitempty"` // Calculated from identitas.tgl_lahir
+}
+
+func LansiaFromEntity(e entity.Lansia) Lansia {
+	return Lansia{
+		Lansia: e,
+	}
 }
 
 type LansiaPayloadInsert struct {

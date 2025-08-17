@@ -7,7 +7,7 @@ import (
 type Usecase interface {
 	// Authentication usecases
 	Login(username, password string) (string, error)
-	Register(payload valueobject.UserRegisterRequest) (string, error)
+	Register(payload valueobject.AuthRegisterRequest) (string, error)
 
 	// User usecases
 	GetAllUser(param map[string]interface{}) ([]valueobject.User, error)

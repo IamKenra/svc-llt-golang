@@ -4,30 +4,15 @@ import "svc-llt-golang/entity"
 
 type User struct {
 	entity.User
-	// Add additional fields for API responses if needed
-	Password string `json:"-"` // For internal use only, not exposed in JSON
+	entity.StandardKey
+	entity.Pagination
+	entity.Time
 }
 
-type UserLoginRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-type UserLoginResponse struct {
-	Message string `json:"message"`
-	Token   string `json:"token"`
-}
-
-type UserRegisterRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Nama     string `json:"nama" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-}
-
-type UserRegisterResponse struct {
-	Message string `json:"message"`
-	UUID    string `json:"uuid"`
+func UserFromEntity(e entity.User) User {
+	return User{
+		User: e,
+	}
 }
 
 type UserPayloadInsert struct {

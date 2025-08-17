@@ -18,4 +18,18 @@ type Usecase interface {
 	StoreLansia(payload valueobject.LansiaPayloadInsert) (valueobject.LansiaPayloadInsert, error)
 	UpdateLansia(payload valueobject.LansiaPayloadUpdate) error
 	DeleteLansia(payload valueobject.LansiaPayloadDelete) error
+
+	// Identitas usecases
+	GetAllIdentitas(param map[string]interface{}) ([]valueobject.Identitas, error)
+	GetOneIdentitas(param map[string]interface{}) (valueobject.Identitas, error)
+	StoreIdentitas(payload valueobject.IdentitasPayloadInsert) (valueobject.IdentitasPayloadInsert, error)
+	UpdateIdentitas(payload valueobject.IdentitasPayloadUpdate) error
+	DeleteIdentitas(payload valueobject.IdentitasPayloadDelete) error
+
+	// Alamat usecases
+	GetAllAlamat(param map[string]interface{}) ([]valueobject.Alamat, error)
+	GetOneAlamat(param map[string]interface{}) (valueobject.Alamat, error)
+	StoreAlamat(payload valueobject.AlamatPayloadInsert) (valueobject.AlamatPayloadInsert, error)
+	UpdateAlamat(payload valueobject.AlamatPayloadUpdate) error
+	DeleteAlamat(payload valueobject.AlamatPayloadDelete) error
 }

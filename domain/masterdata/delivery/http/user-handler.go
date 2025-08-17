@@ -20,7 +20,7 @@ func NewUserHandler(masterdataUC masterdata.Usecase) *UserHandler {
 
 func (handler *UserHandler) Login(ctx *fiber.Ctx) error {
 	log.Println("Login request received")
-	var req valueobject.UserLoginRequest
+	var req valueobject.AuthLoginRequest
 
 	if err := ctx.BodyParser(&req); err != nil {
 		logger.Error("Failed to parse request body: " + err.Error())
@@ -34,7 +34,7 @@ func (handler *UserHandler) Login(ctx *fiber.Ctx) error {
 	}
 
 	logger.Info("User logged in successfully: " + req.Username)
-	return response.Success(ctx, valueobject.UserLoginResponse{
+	return response.Success(ctx, valueobject.AuthLoginResponse{
 		Message: "Login successful",
 		Token:   token,
 	})
@@ -42,7 +42,7 @@ func (handler *UserHandler) Login(ctx *fiber.Ctx) error {
 
 func (handler *UserHandler) Register(ctx *fiber.Ctx) error {
 	log.Println("Register request received")
-	var req valueobject.UserRegisterRequest
+	var req valueobject.AuthRegisterRequest
 
 	if err := ctx.BodyParser(&req); err != nil {
 		logger.Error("Failed to parse request body: " + err.Error())
@@ -56,7 +56,7 @@ func (handler *UserHandler) Register(ctx *fiber.Ctx) error {
 	}
 
 	logger.Info("User registered successfully: " + req.Username)
-	return response.Success(ctx, valueobject.UserRegisterResponse{
+	return response.Success(ctx, valueobject.AuthRegisterResponse{
 		Message: "User registered successfully",
 		UUID:    userUUID,
 	})

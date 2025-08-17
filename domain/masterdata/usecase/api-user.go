@@ -12,18 +12,18 @@ import (
 )
 
 func (masterdata masterdataUsecase) Login(username, password string) (string, error) {
-	user, err := masterdata.repository.FindByUsername(username)
+	auth, err := masterdata.repository.FindByUsername(username)
 	if err != nil {
 		return "", errors.New("invalid credentials")
 	}
 
-	if !utils.CheckPasswordHash(password, user.Password) {
+	if !utils.CheckPasswordHash(password, auth.Auth.Password) {
 		return "", errors.New("invalid credentials")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"uuid": user.UUID,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+		"username": auth.Auth.Username,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(masterdata.jwtKey))
@@ -34,7 +34,7 @@ func (masterdata masterdataUsecase) Login(username, password string) (string, er
 	return tokenString, nil
 }
 
-func (masterdata masterdataUsecase) Register(payload valueobject.UserRegisterRequest) (string, error) {
+func (masterdata masterdataUsecase) Register(payload valueobject.AuthRegisterRequest) (string, error) {
 	hashedPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
 		return "", errors.New("failed to hash password")
@@ -64,7 +64,7 @@ func (masterdata masterdataUsecase) GetOneUser(param map[string]interface{}) (va
 
 func (masterdata masterdataUsecase) StoreUser(payload valueobject.UserPayloadInsert) (valueobject.UserPayloadInsert, error) {
 	for i := range payload.Data {
-		payload.Data[i].UUID = uuid.New().String()
+		payload.Data[i].User.UUID = uuid.New().String()
 	}
 
 	err := masterdata.ProcessStoreUser(payload)

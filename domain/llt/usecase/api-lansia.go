@@ -16,7 +16,7 @@ func (llt lltUsecase) GetOneLansia(param map[string]interface{}) (valueobject.La
 
 func (llt lltUsecase) StoreLansia(payload valueobject.LansiaPayloadInsert) (valueobject.LansiaPayloadInsert, error) {
 	for i := range payload.Data {
-		payload.Data[i].UUID = uuid.New().String()
+		payload.Data[i].Lansia.UUID = uuid.New().String()
 	}
 
 	err := llt.ProcessStoreLansia(payload)

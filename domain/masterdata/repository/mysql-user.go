@@ -28,7 +28,7 @@ func (db *mysqlMasterdataRepository) GetAllUser(param map[string]interface{}) ([
 	
 	var result []valueobject.User
 	for _, user := range users {
-		result = append(result, valueobject.User{User: user})
+		result = append(result, valueobject.UserFromEntity(user))
 	}
 	
 	return result, nil
@@ -46,22 +46,15 @@ func (db *mysqlMasterdataRepository) GetOneUser(param map[string]interface{}) (v
 		return valueobject.User{}, err
 	}
 	
-	return valueobject.User{User: user}, nil
+	return valueobject.UserFromEntity(user), nil
 }
 
-func (db *mysqlMasterdataRepository) FindByUsername(username string) (valueobject.User, error) {
+func (db *mysqlMasterdataRepository) FindByUsername(username string) (valueobject.Auth, error) {
 	var auth entity.Auth
 	if err := db.db.Where("username = ?", username).First(&auth).Error; err != nil {
-		return valueobject.User{}, err
+		return valueobject.Auth{}, err
 	}
-	// For login, we need to return auth data in User format for compatibility
-	user := valueobject.User{
-		User: entity.User{
-			UUID: auth.Username, // temporary for login compatibility
-		},
-		Password: auth.Password, // Add password field for verification
-	}
-	return user, nil
+	return valueobject.AuthFromEntity(auth), nil
 }
 
 func (db *mysqlMasterdataRepository) FindByUUID(uuid string) (valueobject.User, error) {
@@ -69,7 +62,7 @@ func (db *mysqlMasterdataRepository) FindByUUID(uuid string) (valueobject.User, 
 	if err := db.db.Where("uuid = ?", uuid).First(&user).Error; err != nil {
 		return valueobject.User{}, err
 	}
-	return valueobject.User{User: user}, nil
+	return valueobject.UserFromEntity(user), nil
 }
 
 func (db *mysqlMasterdataRepository) CreateAuth(username, password string) error {

@@ -120,11 +120,14 @@ MOVE THE COMPLETED TASK TO HERE
 /svc-llt-golang
 ├── entity/                 ← 🎯 Semua struct entity terpusat
 │   ├── user.go
-│   ├── identity.go
-│   └── elderly_care.go
+│   ├── identitas.go       ← Identitas entity
+│   ├── alamat.go          ← Alamat entity
+│   └── lansia.go          ← Lansia entity (dengan FK)
 ├── valueobject/           ← 🎯 Semua DTO/payload/response terpusat  
 │   ├── user.go
-│   └── elderly_care.go
+│   ├── identitas.go       ← Identitas payloads
+│   ├── alamat.go          ← Alamat payloads
+│   └── lansia.go          ← Lansia payloads
 ├── domain/                ← 🎯 Domain modules
 │   ├── masterdata/
 │   │   ├── repository.go      ← Interface repository
@@ -132,7 +135,26 @@ MOVE THE COMPLETED TASK TO HERE
 │   │   ├── repository/        ← Implementasi repository
 │   │   ├── usecase/           ← Implementasi usecase
 │   │   └── delivery/http/     ← Handler & routes
-│   └── llt/               ← Domain untuk elderly care (ready for dev)
+│   └── llt/               ← Domain LLT (Layanan Lansia Terpadu)
+│       ├── repository.go      ← Interface repository (semua domain)
+│       ├── usecase.go         ← Interface usecase (semua domain)
+│       ├── repository/        ← Implementasi repository (separated)
+│       │   ├── mysql-lansia.go     ← Lansia repository
+│       │   ├── mysql-identitas.go  ← Identitas repository
+│       │   └── mysql-alamat.go     ← Alamat repository
+│       ├── usecase/           ← Implementasi usecase (separated)
+│       │   ├── app.go             ← Usecase constructor
+│       │   ├── api-lansia.go      ← Lansia API methods
+│       │   ├── api-identitas.go   ← Identitas API methods
+│       │   ├── api-alamat.go      ← Alamat API methods
+│       │   ├── processor-lansia.go    ← Lansia processors
+│       │   ├── processor-identitas.go ← Identitas processors
+│       │   └── processor-alamat.go    ← Alamat processors
+│       └── delivery/http/     ← Handler & routes
+│           ├── routes.go          ← All domain routes
+│           ├── lansia_handler.go  ← Lansia handlers
+│           ├── identitas_handler.go ← Identitas handlers
+│           └── alamat_handler.go    ← Alamat handlers
 ├── cmd/                   ← Binary entry points
 │   ├── api/main.go        ← Main API server
 │   ├── server/main.go     ← Alternative server
@@ -180,6 +202,33 @@ PORT=3000
 ## 📋 Next Development Tasks (TODO)
 
 ### High Priority
+- [x] **Entity-ValueObject Configuration Fix** ⚡ (COMPLETED)
+  - [x] Created `entity/helper.go` with StandardKey, Pagination, Time structs
+  - [x] Fixed valueobject structure to use embedded entities following svc-partnership-go pattern
+  - [x] Updated all usecase files to handle embedded struct field access
+  - [x] Fixed ambiguous selector issues (x.UUID → x.Alamat.UUID, etc.)
+  - [x] Added helper functions for entity conversion
+  - [x] Build verification successful with no errors
+
+- [x] **User and Auth Entity Separation** 🔐 (COMPLETED)
+  - [x] Created separate `entity/auth.go` file for authentication entity
+  - [x] Updated `entity/user.go` to contain only user-related fields
+  - [x] Created separate `valueobject/auth.go` with Auth payloads and requests
+  - [x] Updated `valueobject/user.go` to follow embedded struct pattern
+  - [x] Fixed repository interface to return Auth for FindByUsername
+  - [x] Updated usecase Login to use Auth entity instead of User
+  - [x] Updated handlers to use AuthLoginRequest/AuthRegisterRequest
+  - [x] Fixed all processor files to use embedded struct access (x.User.UUID, etc.)
+  - [x] Build verification successful with no errors
+
+- [x] **Entity Cleanup: Identitas vs Identity** 🧹 (COMPLETED)
+  - [x] Analyzed entity usage: `Identitas` (active) vs `Identity` (unused)
+  - [x] Confirmed `Identitas` is used in 14+ files for LLT biodata functionality
+  - [x] Confirmed `Identity` is completely unused (no references in codebase)
+  - [x] Removed unused `entity/identity.go` file
+  - [x] Build verification successful with no errors
+
+### High Priority
 - [x] Complete LLT domain implementation
   - [x] Basic structure created (usecase, repository, entity)
   - [x] Implement lansia CRUD handlers with user tracking
@@ -189,6 +238,53 @@ PORT=3000
   - [x] Disable ORM auto-migration for manual schema management
 
 ### Medium Priority
+
+### Completed High Priority ✅
+- [x] **Foreign Key Dependencies Implementation** 🔗
+  - [x] Created Identitas and Alamat entities with proper database mapping
+  - [x] Implemented CRUD repository methods for Identitas and Alamat
+  - [x] Implemented CRUD usecase methods for Identitas and Alamat  
+  - [x] Created HTTP handlers and routes for Identitas and Alamat
+  - [x] Complete domain implementation with full CRUD operations
+  - **Available Endpoints**:
+    ```
+    POST   /llt-svc/identitas        - Create identitas
+    GET    /llt-svc/identitas        - Get all identitas (with filters)
+    GET    /llt-svc/identitas/detail - Get one identitas by UUID
+    PUT    /llt-svc/identitas        - Update identitas
+    DELETE /llt-svc/identitas        - Delete identitas
+    
+    POST   /llt-svc/alamat           - Create alamat
+    GET    /llt-svc/alamat           - Get all alamat (with filters)
+    GET    /llt-svc/alamat/detail    - Get one alamat by UUID
+    PUT    /llt-svc/alamat           - Update alamat
+    DELETE /llt-svc/alamat           - Delete alamat
+    
+    POST   /llt-svc/lansia           - Create lansia (requires FK)
+    GET    /llt-svc/lansia           - Get all lansia
+    GET    /llt-svc/lansia/detail    - Get one lansia by UUID
+    PUT    /llt-svc/lansia           - Update lansia
+    DELETE /llt-svc/lansia           - Delete lansia
+    ```
+  - **Critical Note**: Lansia table has FK constraints to `identitas(id)` and `alamat(id)`
+  - **Requirement**: Must create Identitas and Alamat records BEFORE creating Lansia
+  - **Database Schema**: 
+    ```sql
+    CONSTRAINT `fk_lansia_identitas` FOREIGN KEY (`id_identitas`) REFERENCES `identitas` (`id`)
+    CONSTRAINT `fk_lansia_alamat` FOREIGN KEY (`id_alamat`) REFERENCES `alamat` (`id`)
+    ```
+
+### Fixed Issues ✅
+- [x] **Entity Structure Consistency** - Fixed lansia entity to match database schema exactly
+  - Removed non-existent `Age` and `Status` fields causing "Unknown column 'age'" error
+  - Added all proper database columns: `path_gambar`, `path_qr`, `level`, `caregiver`
+  - Fixed timestamp columns: `tgl_input`, `tgl_update` instead of `created_at`, `updated_at`
+  - Made `id_identitas` and `id_alamat` required (NOT NULL) to match FK constraints
+- [x] **Business Logic Age Calculation** - Proper age handling
+  - Age/umur calculated from `identitas.tgl_lahir`, not stored separately
+  - Removed Age field from input payload (calculated field only)
+  - Updated value object to have proper field mapping without entity embedding
+  - Fixed processor to use direct field access instead of embedded entity
 
 ### Low Priority
 
