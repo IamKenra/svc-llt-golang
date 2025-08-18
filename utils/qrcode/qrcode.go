@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"svc-llt-golang/utils/config"
 
 	"github.com/skip2/go-qrcode"
 )
 
 // GenerateQRCode generates QR code from UUID and saves it to file
 func GenerateQRCode(uuid string) (string, error) {
-	// Create QR codes directory if not exists
-	qrDir := "storage/qrcodes"
+	// Get storage configuration from environment
+	storageConfig := config.GetStorageConfig()
+	
+	// Create QR codes directory if not exists (using config path)
+	qrDir := storageConfig.GetQRStoragePath()
 	if err := os.MkdirAll(qrDir, 0755); err != nil {
 		return "", fmt.Errorf("failed to create QR codes directory: %v", err)
 	}
