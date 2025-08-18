@@ -6,11 +6,22 @@ import (
 
 func (llt lltUsecase) ProcessStoreLansia(payload valueobject.LansiaPayloadInsert) error {
 	for _, x := range payload.Data {
-		var nama string
+		var nama, pathQr, level, caregiver string
+		
 		if x.Lansia.Nama != nil {
 			nama = *x.Lansia.Nama
 		}
-		err := llt.repository.CreateLansia(x.Lansia.UUID, nama, x.Lansia.IdIdentitas, x.Lansia.IdAlamat, payload.User)
+		if x.Lansia.PathQr != nil {
+			pathQr = *x.Lansia.PathQr
+		}
+		if x.Lansia.Level != nil {
+			level = *x.Lansia.Level
+		}
+		if x.Lansia.Caregiver != nil {
+			caregiver = *x.Lansia.Caregiver
+		}
+		
+		err := llt.repository.CreateLansia(x.Lansia.UUID, nama, x.Lansia.IdIdentitas, x.Lansia.IdAlamat, pathQr, level, caregiver, payload.User)
 		if err != nil {
 			return err
 		}

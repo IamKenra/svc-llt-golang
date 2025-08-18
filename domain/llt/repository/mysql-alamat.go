@@ -49,7 +49,7 @@ func (db *mysqlLltRepository) CreateAlamat(uuid string, alamat *string, userInpu
 	}
 
 	alamatEntity := entity.Alamat{
-		ID:        randomID,
+		ID:        uint64(randomID),
 		UUID:      uuid,
 		FlagAktif: true,
 		TglInput:  time.Now(),

@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type StandardKey struct {
-	ID int64 `json:"-"`
+	ID uint64 `json:"id"`
 }
 
 type Pagination struct {

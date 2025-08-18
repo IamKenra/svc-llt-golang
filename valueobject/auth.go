@@ -9,9 +9,9 @@ type Auth struct {
 	entity.Time
 }
 
-func AuthFromEntity(e entity.Auth) Auth {
+func AuthFromEntity(authEntity entity.Auth) Auth {
 	return Auth{
-		Auth: e,
+		Auth: authEntity,
 	}
 }
 

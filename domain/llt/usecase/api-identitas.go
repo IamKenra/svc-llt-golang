@@ -20,6 +20,21 @@ func (llt lltUsecase) StoreIdentitas(payload valueobject.IdentitasPayloadInsert)
 	}
 
 	err := llt.ProcessStoreIdentitas(payload)
+	if err != nil {
+		return payload, err
+	}
+
+	// Retrieve inserted data to get correct IDs
+	for i := range payload.Data {
+		param := map[string]interface{}{
+			"uuid": payload.Data[i].Identitas.UUID,
+		}
+		insertedData, err := llt.repository.GetOneIdentitas(param)
+		if err == nil {
+			payload.Data[i] = insertedData
+		}
+	}
+
 	return payload, err
 }
 

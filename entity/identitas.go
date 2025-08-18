@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Identitas struct {
-	ID               int64     `gorm:"primaryKey;autoIncrement:false"`
+	ID               uint64    `gorm:"primaryKey;autoIncrement:false"`
 	UUID             string    `gorm:"type:varchar(255);uniqueIndex:uq_biodata_uuid;not null"`
 	Nik              string    `gorm:"type:varchar(32);uniqueIndex:uq_biodata_nik;not null"`
 	NamaDepan        string    `gorm:"column:nama_depan;type:varchar(100);not null"`

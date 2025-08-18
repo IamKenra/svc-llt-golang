@@ -9,9 +9,9 @@ type Alamat struct {
 	entity.Time
 }
 
-func AlamatFromEntity(e entity.Alamat) Alamat {
+func AlamatFromEntity(alamatEntity entity.Alamat) Alamat {
 	return Alamat{
-		Alamat: e,
+		Alamat: alamatEntity,
 	}
 }
 

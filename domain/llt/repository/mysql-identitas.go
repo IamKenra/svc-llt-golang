@@ -49,7 +49,7 @@ func (db *mysqlLltRepository) CreateIdentitas(uuid, nik, namaDepan string, namaB
 	}
 
 	identitas := entity.Identitas{
-		ID:        randomID,
+		ID:        uint64(randomID),
 		UUID:      uuid,
 		Nik:       nik,
 		NamaDepan: namaDepan,

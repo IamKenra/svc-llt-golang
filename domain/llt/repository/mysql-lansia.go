@@ -53,14 +53,14 @@ func (db *mysqlLltRepository) GetOneLansia(param map[string]interface{}) (valueo
 	return valueobject.Lansia{Lansia: lansia}, nil
 }
 
-func (db *mysqlLltRepository) CreateLansia(uuid, nama string, idIdentitas, idAlamat int64, userInput string) error {
+func (db *mysqlLltRepository) CreateLansia(uuid, nama string, idIdentitas, idAlamat uint64, pathQr, level, caregiver, userInput string) error {
 	randomID, err := utils.GenerateRandomID()
 	if err != nil {
 		return err
 	}
 
 	lansia := entity.Lansia{
-		ID:          randomID,
+		ID:          uint64(randomID),
 		UUID:        uuid,
 		IdIdentitas: idIdentitas,
 		IdAlamat:    idAlamat,
@@ -73,6 +73,15 @@ func (db *mysqlLltRepository) CreateLansia(uuid, nama string, idIdentitas, idAla
 	// Set optional fields
 	if nama != "" {
 		lansia.Nama = &nama
+	}
+	if pathQr != "" {
+		lansia.PathQr = &pathQr
+	}
+	if level != "" {
+		lansia.Level = &level
+	}
+	if caregiver != "" {
+		lansia.Caregiver = &caregiver
 	}
 	if userInput != "" {
 		lansia.UserInput = &userInput

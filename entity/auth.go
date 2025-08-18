@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Auth struct {
-	ID         int64     `gorm:"primaryKey;autoIncrement:false"`
+	ID         uint64    `gorm:"primaryKey;autoIncrement:false"`
 	Username   string    `gorm:"type:varchar(255);uniqueIndex;not null"`
 	Password   string    `gorm:"type:varchar(255);not null"`
 	TglInput   time.Time `gorm:"column:tgl_input"`

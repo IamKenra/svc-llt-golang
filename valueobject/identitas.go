@@ -9,9 +9,9 @@ type Identitas struct {
 	entity.Time
 }
 
-func IdentitasFromEntity(e entity.Identitas) Identitas {
+func IdentitasFromEntity(identitasEntity entity.Identitas) Identitas {
 	return Identitas{
-		Identitas: e,
+		Identitas: identitasEntity,
 	}
 }
 

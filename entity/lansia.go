@@ -3,10 +3,10 @@ package entity
 import "time"
 
 type Lansia struct {
-	ID           int64   `gorm:"primaryKey;autoIncrement:false"`
+	ID           uint64  `gorm:"primaryKey;autoIncrement:false"`
 	UUID         string  `gorm:"type:varchar(255);uniqueIndex;not null"`
-	IdIdentitas  int64   `gorm:"column:id_identitas;not null"`
-	IdAlamat     int64   `gorm:"column:id_alamat;not null"`
+	IdIdentitas  uint64  `gorm:"column:id_identitas;not null"`
+	IdAlamat     uint64  `gorm:"column:id_alamat;not null"`
 	Nama         *string `gorm:"column:nama;type:varchar(255)"`
 	PathGambar   *string `gorm:"column:path_gambar;type:varchar(255)"`
 	PathQr       *string `gorm:"column:path_qr;type:varchar(255)"`

@@ -9,9 +9,9 @@ type User struct {
 	entity.Time
 }
 
-func UserFromEntity(e entity.User) User {
+func UserFromEntity(userEntity entity.User) User {
 	return User{
-		User: e,
+		User: userEntity,
 	}
 }
 

@@ -25,6 +25,7 @@ func RegisterLltRoutes(api fiber.Router, db *gorm.DB) {
 		lansia.Get("/", lansiaHandler.GetAllLansia)
 		lansia.Get("/detail", lansiaHandler.GetOneLansia)
 		lansia.Post("/", lansiaHandler.StoreLansia)
+		lansia.Post("/complete", lansiaHandler.StoreLansiaComplete) // Orchestrated creation
 		lansia.Put("/", lansiaHandler.UpdateLansia)
 		lansia.Delete("/", lansiaHandler.DeleteLansia)
 	}

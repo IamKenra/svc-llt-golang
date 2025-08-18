@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Alamat struct {
-	ID         int64     `gorm:"primaryKey;autoIncrement:false"`
+	ID         uint64    `gorm:"primaryKey;autoIncrement:false"`
 	UUID       string    `gorm:"type:varchar(255);uniqueIndex:uq_alamat_uuid;not null"`
 	Alamat     *string   `gorm:"type:varchar(255)"`
 	Rt         *string   `gorm:"type:varchar(5)"`

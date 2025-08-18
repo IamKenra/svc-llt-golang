@@ -142,3 +142,33 @@ func (handler *LansiaHandler) DeleteLansia(ctx *fiber.Ctx) error {
 	logger.Info("Lansia deleted successfully")
 	return response.Success(ctx, "Lansia deleted successfully")
 }
+
+func (handler *LansiaHandler) StoreLansiaComplete(ctx *fiber.Ctx) error {
+	log.Println("Store lansia complete request received")
+
+	userMember, err := header.ValidateAndExtractXMember(ctx)
+	if err != nil {
+		return response.BadRequest(ctx, err.Error())
+	}
+
+	var req valueobject.LansiaCompletePayloadInsert
+	if err := ctx.BodyParser(&req); err != nil {
+		logger.Error("Failed to parse request body: " + err.Error())
+		return response.BadRequest(ctx, "Invalid request payload")
+	}
+
+	req.User = userMember
+
+	results, err := handler.lltUsecase.StoreLansiaComplete(req)
+	if err != nil {
+		logger.Error("Failed to store lansia complete: " + err.Error())
+		return response.Error(ctx, "Failed to store lansia complete: " + err.Error())
+	}
+
+	logger.Info("Lansia complete stored successfully")
+	return response.Success(ctx, valueobject.LansiaListResponse{
+		Message: "Lansia created successfully with QR code",
+		Data:    results,
+		Total:   len(results),
+	})
+}

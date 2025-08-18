@@ -20,6 +20,21 @@ func (llt lltUsecase) StoreAlamat(payload valueobject.AlamatPayloadInsert) (valu
 	}
 
 	err := llt.ProcessStoreAlamat(payload)
+	if err != nil {
+		return payload, err
+	}
+
+	// Retrieve inserted data to get correct IDs
+	for i := range payload.Data {
+		param := map[string]interface{}{
+			"uuid": payload.Data[i].Alamat.UUID,
+		}
+		insertedData, err := llt.repository.GetOneAlamat(param)
+		if err == nil {
+			payload.Data[i] = insertedData
+		}
+	}
+
 	return payload, err
 }
 

@@ -72,7 +72,7 @@ func (db *mysqlMasterdataRepository) CreateAuth(username, password string) error
 	}
 
 	auth := entity.Auth{
-		ID:        randomID,
+		ID:        uint64(randomID),
 		Username:  username,
 		Password:  password,
 		TglInput:  time.Now(),
@@ -89,7 +89,7 @@ func (db *mysqlMasterdataRepository) CreateUser(uuid, nama, email string) error 
 	}
 
 	user := entity.User{
-		ID:        randomID,
+		ID:        uint64(randomID),
 		UUID:      uuid,
 		Nama:      nama,
 		Email:     email,

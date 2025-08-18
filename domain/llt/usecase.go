@@ -16,6 +16,7 @@ type Usecase interface {
 	GetAllLansia(param map[string]interface{}) ([]valueobject.Lansia, error)
 	GetOneLansia(param map[string]interface{}) (valueobject.Lansia, error)
 	StoreLansia(payload valueobject.LansiaPayloadInsert) (valueobject.LansiaPayloadInsert, error)
+	StoreLansiaComplete(payload valueobject.LansiaCompletePayloadInsert) ([]valueobject.Lansia, error)
 	UpdateLansia(payload valueobject.LansiaPayloadUpdate) error
 	DeleteLansia(payload valueobject.LansiaPayloadDelete) error
 
