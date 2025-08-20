@@ -8,9 +8,10 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/gorm"
 )
 
-func JWTProtected() fiber.Handler {
+func JWTProtected(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
@@ -37,10 +38,30 @@ func JWTProtected() fiber.Handler {
 			})
 		}
 
-		// Jika valid, kamu bisa masukkan info user ke context
+		// Verify user exists in database
 		claims := token.Claims.(jwt.MapClaims)
-		c.Locals("uuid", claims["uuid"])
-		c.Locals("username", claims["username"])
+		username, ok := claims["username"].(string)
+		if !ok {
+			return response.Unauthorized(c, "Invalid token claims")
+		}
+
+		// Check if user exists in database
+		var authUser struct {
+			ID       uint64 `gorm:"column:id"`
+			Username string `gorm:"column:username"`
+		}
+		
+		if err := db.Table("auth").Where("username = ?", username).First(&authUser).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return response.Unauthorized(c, "User not found in database")
+			}
+			logger.Error("Database error during token verification: " + err.Error())
+			return response.Unauthorized(c, "Authentication failed")
+		}
+
+		// Set user info in context
+		c.Locals("username", username)
+		c.Locals("user_id", authUser.ID)
 
 		return c.Next()
 	}

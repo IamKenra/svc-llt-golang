@@ -43,3 +43,5 @@ Thumbs.db
 # Claude documentation and notes
 claude_note/
 storage/
+
+API_DOCUMENTATION.md

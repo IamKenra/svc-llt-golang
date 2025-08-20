@@ -4,6 +4,7 @@ import (
 	"log"
 	"svc-llt-golang/domain/llt/repository"
 	"svc-llt-golang/domain/llt/usecase"
+	"svc-llt-golang/utils/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -19,8 +20,8 @@ func RegisterLltRoutes(api fiber.Router, db *gorm.DB) {
 	identitasHandler := NewIdentitasHandler(lltUC)
 	alamatHandler := NewAlamatHandler(lltUC)
 
-	// Lansia routes under /lansia
-	lansia := api.Group("/lansia")
+	// Lansia routes under /lansia (protected)
+	lansia := api.Group("/lansia", middleware.JWTProtected(db))
 	{
 		lansia.Get("/", lansiaHandler.GetAllLansia)
 		lansia.Get("/detail", lansiaHandler.GetOneLansia)
@@ -30,8 +31,8 @@ func RegisterLltRoutes(api fiber.Router, db *gorm.DB) {
 		lansia.Delete("/", lansiaHandler.DeleteLansia)
 	}
 
-	// Identitas routes under /identitas
-	identitas := api.Group("/identitas")
+	// Identitas routes under /identitas (protected)
+	identitas := api.Group("/identitas", middleware.JWTProtected(db))
 	{
 		identitas.Get("/", identitasHandler.GetAllIdentitas)
 		identitas.Get("/detail", identitasHandler.GetOneIdentitas)
@@ -40,8 +41,8 @@ func RegisterLltRoutes(api fiber.Router, db *gorm.DB) {
 		identitas.Delete("/", identitasHandler.DeleteIdentitas)
 	}
 
-	// Alamat routes under /alamat
-	alamat := api.Group("/alamat")
+	// Alamat routes under /alamat (protected)
+	alamat := api.Group("/alamat", middleware.JWTProtected(db))
 	{
 		alamat.Get("/", alamatHandler.GetAllAlamat)
 		alamat.Get("/detail", alamatHandler.GetOneAlamat)
